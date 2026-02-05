@@ -3,30 +3,48 @@ const fs = require('fs');
 const path = require('path');
 
 const server = http.createServer((req, res) => {
-    console.log('Request received for:', req.url);
-        
-            const filePath = path.join(__dirname, 'index.html');
-                console.log('Looking for file at:', filePath);
-                    
-                        fs.readFile(filePath, 'utf8', (err, content) => {
-                                if (err) {
-                                            console.error('Error reading file:', err.message);
-                                                        res.writeHead(500, { 'Content-Type': 'text/html' });
-                                                                    res.end(`
-                                                                                    <h1>Server Error</h1>
-                                                                                                    <p>Could not find index.html</p>
-                                                                                                                    <p>Error: ${err.message}</p>
-                                                                                                                                `);
-                                                                                                                                            return;
-                                                                                                                                                    }
-                                                                                                                                                            
-                                                                                                                                                                    console.log('File found, sending response');
-                                                                                                                                                                            res.writeHead(200, { 'Content-Type': 'text/html' });
-                                                                                                                                                                                    res.end(content);
-                                                                                                                                                                                        });
-                                                                                                                                                                                        });
+    // Serve from public folder
+        let filePath = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
+            
+                // Default to index.html if file not found
+                    const extname = path.extname(filePath);
+                        let contentType = 'text/html';
+                            
+                                // Set content type
+                                    if (extname === '.css') contentType = 'text/css';
+                                        else if (extname === '.js') contentType = 'text/javascript';
+                                            else if (extname === '.png') contentType = 'image/png';
+                                                else if (extname === '.jpg') contentType = 'image/jpg';
+                                                    
+                                                        // Read file
+                                                            fs.readFile(filePath, (err, content) => {
+                                                                    if (err) {
+                                                                                // If file not found, try index.html
+                                                                                            if (err.code === 'ENOENT') {
+                                                                                                            fs.readFile(path.join(__dirname, 'public', 'index.html'), (err, content) => {
+                                                                                                                                if (err) {
+                                                                                                                                                        res.writeHead(404);
+                                                                                                                                                                                res.end('File not found');
+                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                                                                                                                                                                                                                                                    res.end(content);
+                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                        });
+                                                                                                                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                                                                                                                                    // Server error
+                                                                                                                                                                                                                                                                                                                                    res.writeHead(500);
+                                                                                                                                                                                                                                                                                                                                                    res.end('Server Error: ' + err.code);
+                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                        } else {
+                                                                                                                                                                                                                                                                                                                                                                                    // Success
+                                                                                                                                                                                                                                                                                                                                                                                                res.writeHead(200, { 'Content-Type': contentType });
+                                                                                                                                                                                                                                                                                                                                                                                                            res.end(content);
+                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                        });
+                                                                                                                                                                                                                                                                                                                                                                                                                        });
 
-                                                                                                                                                                                        const PORT = process.env.PORT || 3000;
-                                                                                                                                                                                        server.listen(PORT, '0.0.0.0', () => {
-                                                                                                                                                                                            console.log('✅ Server started on port', PORT);
-                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                                                                                                                                        const PORT = process.env.PORT || 3000;
+                                                                                                                                                                                                                                                                                                                                                                                                                        server.listen(PORT, '0.0.0.0', () => {
+                                                                                                                                                                                                                                                                                                                                                                                                                            console.log(`✅ Church website running on port ${PORT}`);
+                                                                                                                                                                                                                                                                                                                                                                                                                                console.log(`📁 Serving files from: ${path.join(__dirname, 'public')}`);
+                                                                                                                                                                                                                                                                                                                                                                                                                                });
