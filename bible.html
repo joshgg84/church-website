@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>The Word - Aflame Bible Church</title>
+    <style>
+    * {
+        box-sizing: border-box;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 1.1rem;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        background: #f8f9fa;
+        min-height: 100vh;
+    }
+    
+    header {
+        display: flex;
+        gap: 20px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 650;
+        width: 100%;
+        height: 150px;
+        background: linear-gradient(135deg, skyblue, deepskyblue);
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(135, 206, 235, 0.3);
+        padding: 0 20px;
+    }
+    
+    .text {
+        display: flex;
+        gap: 15px;
+        text-align: center;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .text span {
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .text span:nth-child(2) {
+        text-shadow: 2px 2px 6px red;
+        animation: bouncy 2s infinite alternate;
+    }
+    
+    @keyframes bouncy {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.1); }
+    }
+    
+    .search-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    #search {
+        background: white;
+        height: 45px;
+        padding-left: 15px;
+        border: none;
+        width: 100%;
+        border-radius: 30px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        font-size: 16px;
+        outline: none;
+    }
+    
+    #search::placeholder {
+        font-style: italic;
+        color: #666;
+    }
+    
+    .search-btn {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 20px;
+        color: white;
+        border: none;
+        background: linear-gradient(to top, red, orange);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    
+    .search-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .books {
+        margin: 5px;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        background: white;
+        max-width: 1200px;
+        margin: 0 auto 30px;
+    }
+    
+    .buttons {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 25px;
+    }
+    
+    .buttons button {
+        width: 50%;
+        color: #666;
+        font-size: 1.1rem;
+        background: none;
+        border: none;
+        padding: 15px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .buttons button:hover {
+        color: darkred;
+    }
+    
+    .buttons button.active {
+        color: darkred;
+        border-bottom: 3px solid skyblue;
+        background: linear-gradient(to bottom, rgba(135, 206, 235, 0.1), transparent);
+    }
+    
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .book-btn {
+        background: white;
+        border: 2px solid #e9ecef;
+        padding: 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s;
+        color: #333;
+    }
+    
+    .book-btn:hover {
+        background: skyblue;
+        color: white;
+        border-color: skyblue;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+    }
+    
+    .book-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .chapters-container {
+        display: none;
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+    
+    .chapters-container.active {
+        display: block;
+        animation: fadeIn 0.5s;
+    }
+    
+    .chapters-title {
+        color: darkred;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .chapters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 10px;
+    }
+    
+    .chapter-btn {
+        background: white;
+        border: 2px solid #e9ecef;
+        padding: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .chapter-btn:hover {
+        background: linear-gradient(to bottom, red, orange);
+        color: white;
+        border-color: orange;
+    }
+    
+    .chapter-btn:active {
+        transform: scale(0.9);
+    }
+    
+    /* VERSE SELECTOR STYLES */
+    .verse-selector {
+        display: none;
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin: 20px auto;
+        max-width: 500px;
+        text-align: center;
+        animation: fadeIn 0.5s;
+    }
+    
+    .verse-selector.active {
+        display: block;
+    }
+    
+    .verse-selector h3 {
+        color: darkred;
+        margin-bottom: 15px;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .verse-selector p {
+        margin-bottom: 20px;
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .verse-selector strong {
+        color: darkred;
+    }
+    
+    .verse-input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .verse-input-container span {
+        font-weight: 600;
+        color: #333;
+        font-size: 1.1rem;
+    }
+    
+    #verseInput {
+        width: 100px;
+        padding: 14px;
+        border: 2px solid skyblue;
+        border-radius: 8px;
+        font-size: 18px;
+        text-align: center;
+        font-weight: 600;
+        outline: none;
+        transition: all 0.3s;
+        background: #f8f9fa;
+    }
+    
+    #verseInput:focus {
+        border-color: orange;
+        box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.2);
+        background: white;
+    }
+    
+    .verse-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .verse-btn {
+        padding: 14px 30px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+        min-width: 180px;
+        justify-content: center;
+    }
+    
+    #goToVerseBtn {
+        background: linear-gradient(to bottom, red, orange);
+        color: white;
+    }
+    
+    #goToVerseBtn:hover {
+        background: linear-gradient(to bottom, orange, red);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
+    }
+    
+    #skipVerseBtn {
+        background: skyblue;
+        color: white;
+    }
+    
+    #skipVerseBtn:hover {
+        background: deepskyblue;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+    }
+    
+    /* BIBLE TEXT CONTAINER */
+    .bible-text-container {
+        display: none;
+        margin: 20px;
+        padding: 25px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .bible-text-container.active {
+        display: block;
+        animation: fadeIn 0.5s;
+    }
+    
+    .passage-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .passage-title {
+        color: darkred;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .nav-btn {
+        background: white;
+        color: darkred;
+        border: 2px solid orange;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        min-width: 150px;
+        justify-content: center;
+    }
+    
+    .nav-btn:hover {
+        background: orange;
+        color: white;
+    }
+    
+    .nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .nav-btn:disabled:hover {
+        background: white;
+        color: darkred;
+    }
+    
+    /* VERSE NAVIGATION BAR */
+    .verse-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 20px 0;
+        padding: 15px;
+        background: linear-gradient(135deg, rgba(135, 206, 235, 0.1), rgba(255, 165, 0, 0.1));
+        border-radius: 10px;
+        border-left: 4px solid skyblue;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .current-verse-display {
+        font-weight: 600;
+        color: darkred;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .verse-nav-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .verse-nav-btn {
+        padding: 10px 20px;
+        background: white;
+        border: 2px solid skyblue;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .verse-nav-btn:hover {
+        background: skyblue;
+        color: white;
+    }
+    
+    /* BIBLE TEXT STYLES */
+    .bible-text {
+        font-size: 18px;
+        line-height: 1.8;
+        color: #333;
+        margin-top: 20px;
+    }
+    
+    .verse {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-left: 3px solid transparent;
+        transition: all 0.3s;
+        border-radius: 5px;
+        background: white;
+    }
+    
+    .verse:hover {
+        border-left: 3px solid skyblue;
+        background: rgba(135, 206, 235, 0.05);
+    }
+    
+    .verse-num {
+        color: darkred;
+        font-weight: bold;
+        margin-right: 10px;
+        font-size: 14px;
+        background: rgba(139, 0, 0, 0.1);
+        padding: 4px 10px;
+        border-radius: 4px;
+        display: inline-block;
+        min-width: 30px;
+        text-align: center;
+    }
+    
+    .verse-highlighted {
+        background: rgba(255, 165, 0, 0.15) !important;
+        border-left: 4px solid orange !important;
+        animation: highlightPulse 2s ease-in-out;
+        transform: translateX(5px);
+    }
+    
+    @keyframes highlightPulse {
+        0%, 100% { background: rgba(255, 165, 0, 0.15); }
+        50% { background: rgba(255, 165, 0, 0.3); }
+    }
+    
+    /* SEARCH RESULTS */
+    .search-results {
+        display: none;
+        margin: 20px;
+        padding: 25px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .search-results.active {
+        display: block;
+        animation: fadeIn 0.5s;
+    }
+    
+    .results-title {
+        color: darkred;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .result-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border-left: 4px solid skyblue;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .result-item:hover {
+        transform: translateX(5px);
+        border-left-color: orange;
+        background: white;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .result-ref {
+        color: darkred;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .result-text {
+        color: #666;
+        line-height: 1.6;
+    }
+    
+    /* BACK BUTTONS */
+    .back-btn {
+        background: skyblue;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .back-btn:hover {
+        background: deepskyblue;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+    }
+    
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 768px) {
+        .books-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        
+        .chapters-grid {
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        }
+        
+        .passage-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .nav-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            justify-content: center;
+            min-width: 120px;
+        }
+        
+        .verse-nav {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .verse-nav-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+        
+        .verse-btn {
+            min-width: 140px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .text {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .text span {
+            font-size: 1.8rem;
+        }
+        
+        .buttons button {
+            font-size: 1rem;
+            padding: 12px;
+        }
+        
+        .book-btn {
+            padding: 12px;
+            font-size: 15px;
+        }
+        
+        .verse-buttons {
+            flex-direction: column;
+        }
+        
+        .verse-btn {
+            width: 100%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="text">
+            <span>Aflame</span>
+            <span>Bible</span>
+            <span>Church</span>
+        </span>
+        <div class="search-container">
+            <input id="search" type="search" placeholder="Search Bible verses (e.g., John 3:16, love, faith)">
+            <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+    </header>
+    
+    <div class="books">
+        <div class="buttons">
+            <button class="testament active" id="oldTestament">Old Testament</button>
+            <button class="testament" id="newTestament">New Testament</button>
+        </div>
+        
+        <div class="books-grid" id="booksContainer">
+            <!-- Books will be loaded here -->
+        </div>
+        
+        <div class="chapters-container" id="chaptersContainer">
+            <h3 class="chapters-title"><i class="fas fa-book"></i> <span id="selectedBook"></span></h3>
+            <div class="chapters-grid" id="chaptersGrid">
+                <!-- Chapters will be loaded here -->
+            </div>
+            <button class="back-btn" id="backToBooks"><i class="fas fa-arrow-left"></i> Back to Books</button>
+        </div>
+    </div>
+    
+    <!-- VERSE SELECTOR MODAL -->
+    <div class="verse-selector" id="verseSelector">
+        <h3><i class="fas fa-arrow-right"></i> Go to Specific Verse</h3>
+        <p>You selected: <strong id="selectedChapterInfo"></strong></p>
+        <div class="verse-input-container">
+            <span>Enter verse number:</span>
+            <input type="number" id="verseInput" min="1" max="100" placeholder="e.g., 16" autofocus>
+        </div>
+        <div class="verse-buttons">
+            <button class="verse-btn" id="goToVerseBtn">
+                <i class="fas fa-arrow-right"></i> Go to Verse
+            </button>
+            <button class="verse-btn" id="skipVerseBtn">
+                <i class="fas fa-book-open"></i> Read Whole Chapter
+            </button>
+        </div>
+    </div>
+    
+    <!-- BIBLE TEXT READER -->
+    <div class="bible-text-container" id="bibleTextContainer">
+        <div class="passage-header">
+            <h2 class="passage-title" id="passageTitle">Loading...</h2>
+            <div class="nav-buttons">
+                <button class="nav-btn" id="prevChapter"><i class="fas fa-chevron-left"></i> Previous Chapter</button>
+                <button class="nav-btn" id="nextChapter">Next Chapter <i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+        
+        <div class="verse-nav">
+            <div class="current-verse-display">
+                <i class="fas fa-bookmark"></i> <span id="currentVerseDisplay">Reading full chapter</span>
+            </div>
+            <div class="verse-nav-buttons">
+                <button class="verse-nav-btn" id="changeVerseBtn">
+                    <i class="fas fa-exchange-alt"></i> Change Verse
+                </button>
+            </div>
+        </div>
+        
+        <div class="bible-text" id="bibleText">
+            <!-- Bible text will be loaded here -->
+        </div>
+        <button class="back-btn" id="backToChapters"><i class="fas fa-arrow-left"></i> Back to Chapters</button>
+    </div>
+    
+    <!-- SEARCH RESULTS -->
+    <div class="search-results" id="searchResults">
+        <h3 class="results-title"><i class="fas fa-search"></i> Search Results</h3>
+        <div id="resultsContainer">
+            <!-- Search results will be loaded here -->
+        </div>
+        <button class="back-btn" id="backFromSearch"><i class="fas fa-arrow-left"></i> Back to Bible</button>
+    </div>
+</body>
+</html>
