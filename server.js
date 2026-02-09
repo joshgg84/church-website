@@ -1,32 +1,35 @@
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
 
 const server = http.createServer((req, res) => {
-    console.log('Serving church website');
+    // Determine which file to serve based on the URL
+    let filePath;
+    if (req.url === '/bible' || req.url === '/bible.html') {
+        filePath = path.join(__dirname, 'bible.html');
+    } else {
+        filePath = path.join(__dirname, 'index.html');
+    }
+    
+    // Read and serve the file
+    fs.readFile(filePath, 'utf-8', (err, data) => {
+        if (err) {
+            res.writeHead(500, {
+                'Content-Type': 'text/html',
+                'Cache-Control': 'no-cache'
+            });
+            res.end(`<h1>Error Reading ${path.basename(filePath)}</h1>`);
+            return;
+        }
         
-            fs.readFile('index.html', 'utf8', (err, content) => {
-                    if (err) {
-                                console.log('Error, sending fallback');
-                                            res.writeHead(200, { 'Content-Type': 'text/html' });
-                                                        res.end(`
-                                                                        <!DOCTYPE html>
-                                                                                        <html>
-                                                                                                        <head><title>Our Church</title></head>
-                                                                                                                        <body style="text-align:center;padding:50px;">
-                                                                                                                                            <h1>Welcome to Our Church</h1>
-                                                                                                                                                                <p>✅ Website is working!</p>
-                                                                                                                                                                                    <p>Sunday 10:00 AM</p>
-                                                                                                                                                                                                    </body>
-                                                                                                                                                                                                                    </html>
-                                                                                                                                                                                                                                `);
-                                                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                                                                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                                                                                                                                                                                                                                                                res.end(content);
-                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                                                                            });
+        res.writeHead(200, {
+            'Content-Type': 'text/html',
+            'Cache-Control': 'no-cache'
+        });
+        res.end(data);
+    });
+});
 
-                                                                                                                                                                                                                                                                            const PORT = process.env.PORT || 3000;
-                                                                                                                                                                                                                                                                            server.listen(PORT, '0.0.0.0', () => {
-                                                                                                                                                                                                                                                                                console.log('✅ Church site on port', PORT);
-                                                                                                                                                                                                                                                                                });
+server.listen(process.env.PORT || 3000, '0.0.0.0', () => {
+    console.log("Website running on port 3000");
+});
