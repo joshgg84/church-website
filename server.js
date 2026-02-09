@@ -12,6 +12,8 @@ const server = http.createServer((req, res) => {
         serveFile('bible.js', 'text/javascript', res);
     } else if (req.url === '/' || req.url === '/index.html') {
         serveFile('index.html', 'text/html', res);
+    } else if (req.url === '/index.css') {
+        serveFile('index.css', 'text/css', res);
     } else {
         serveFile('index.html', 'text/html', res);
     }
