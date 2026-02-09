@@ -3,33 +3,36 @@ const fs = require('fs');
 const path = require('path');
 
 const server = http.createServer((req, res) => {
-    // Determine which file to serve based on the URL
-    let filePath;
-    if (req.url === '/bible' || req.url === '/bible.html') {
-        filePath = path.join(__dirname, 'bible.html');
-    } else {
-        filePath = path.join(__dirname, 'index.html');
-    }
+    console.log('Request:', req.url);
     
-    // Read and serve the file
-    fs.readFile(filePath, 'utf-8', (err, data) => {
-        if (err) {
-            res.writeHead(500, {
-                'Content-Type': 'text/html',
-                'Cache-Control': 'no-cache'
-            });
-            res.end(`<h1>Error Reading ${path.basename(filePath)}</h1>`);
-            return;
-        }
-        
-        res.writeHead(200, {
-            'Content-Type': 'text/html',
-            'Cache-Control': 'no-cache'
-        });
-        res.end(data);
-    });
+    // Map URLs to files
+    if (req.url === '/bible' || req.url === '/bible.html') {
+        serveFile('bible.html', 'text/html', res);
+    } else if (req.url === '/bible.js') {
+        serveFile('bible.js', 'text/javascript', res);
+    } else if (req.url === '/' || req.url === '/index.html') {
+        serveFile('index.html', 'text/html', res);
+    } else {
+        serveFile('index.html', 'text/html', res);
+    }
 });
 
-server.listen(process.env.PORT || 3000, '0.0.0.0', () => {
-    console.log("Website running on port 3000");
+function serveFile(filename, contentType, res) {
+    fs.readFile(filename, (err, data) => {
+        if (err) {
+            console.log('Error serving', filename, err.message);
+            res.writeHead(404, {'Content-Type': 'text/html'});
+            res.end('<h1>404 - File Not Found</h1>');
+        } else {
+            res.writeHead(200, {'Content-Type': contentType});
+            res.end(data);
+        }
+    });
+}
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Church website running on port ${PORT}`);
+    console.log(`📖 Main site: http://localhost:${PORT}`);
+    console.log(`📖 Bible app: http://localhost:${PORT}/bible`);
 });
