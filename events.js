@@ -1,6 +1,4 @@
-// ===========================================
-// EVENTS DATABASE
-// ===========================================
+
 const events = [
     {
         id: 1,
@@ -129,9 +127,6 @@ if (navBars.length > 0) {
     });
 }
 
-// ===========================================
-// CALENDAR RENDERING
-// ===========================================
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function renderCalendar() {
@@ -253,9 +248,6 @@ function renderCalendar() {
     }
 }
 
-// ===========================================
-// EVENTS LIST RENDERING
-// ===========================================
 function renderEventsList() {
     if (!listView) return;
     
@@ -309,9 +301,6 @@ function renderEventsList() {
     });
 }
 
-// ===========================================
-// FEATURED EVENTS RENDERING
-// ===========================================
 function renderFeaturedEvents() {
     if (!featuredEvents) return;
     
@@ -356,9 +345,6 @@ function renderFeaturedEvents() {
     });
 }
 
-// ===========================================
-// MODAL FUNCTIONS
-// ===========================================
 window.showEventDetails = function(event) {
     const eventDate = new Date(event.date);
     const formattedDate = eventDate.toLocaleDateString('en-US', { 
@@ -432,9 +418,6 @@ window.closeModal = function() {
     if (eventModal) eventModal.style.display = 'none';
 };
 
-// ===========================================
-// REMINDER FUNCTIONS
-// ===========================================
 window.openReminderModal = function(eventId) {
     selectedEventId = eventId;
     if (reminderModal) reminderModal.style.display = 'flex';
@@ -470,9 +453,6 @@ window.setReminder = function() {
     closeReminderModal();
 };
 
-// ========
-// LOGO PREVIEW
-// ===========================================
 const logo = document.querySelector('.aflame');
 const logoModal = document.getElementById('logoModal');
 
@@ -485,7 +465,73 @@ if (logo && logoModal) {
     logoModal.style.display = 'flex';
   };
 }
+if (calendarViewBtn && listViewBtn && calendarGrid && listView) {
+  calendarViewBtn.onclick = () => {
+    calendarViewBtn.classList.add('active');
+    listViewBtn.classList.remove('active');
+    calendarGrid.style.display = 'grid';
+    listView.classList.remove('active');
+    listView.style.display = 'none';
+  };
+  
+  listViewBtn.onclick = () => {
+    listViewBtn.classList.add('active');
+    calendarViewBtn.classList.remove('active');
+    calendarGrid.style.display = 'none';
+    listView.classList.add('active');
+    listView.style.display = 'block';
+  };
+}
 
 // ===========================================
-// VIEW TOGGLE
-// ====================
+// MONTH NAVIGATION
+// ===========================================
+if (prevMonthBtn) {
+  prevMonthBtn.onclick = () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    renderCalendar();
+  };
+}
+
+if (nextMonthBtn) {
+  nextMonthBtn.onclick = () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderCalendar();
+  };
+}
+
+window.onclick = (e) => {
+  if (e.target === eventModal) {
+    eventModal.style.display = 'none';
+  }
+  if (e.target === reminderModal) {
+    reminderModal.style.display = 'none';
+  }
+  if (e.target === logoModal) {
+    logoModal.style.display = 'none';
+  }
+};
+
+function init() {
+  renderCalendar();
+  renderEventsList();
+  renderFeaturedEvents();
+  
+  if (calendarGrid) calendarGrid.style.display = 'grid';
+  if (listView) {
+    listView.classList.remove('active');
+    listView.style.display = 'none';
+  }
+  
+  console.log('✅ Events page loaded - ' + new Date().toLocaleString());
+} 
+
+document.addEventListener('DOMContentLoaded', init);
