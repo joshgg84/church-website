@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Events - Aflame Bible Church (A.B.C)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 8px;
+            height: 100px;
+            background: linear-gradient(60deg, red, orange);
+            padding: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        header img {
+            width: 70px;
+            height: 40px;
+            border: 2px solid white;
+            border-radius: 5px;
+            background: white;
+            padding: 3px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        header img:hover {
+            transform: scale(1.1);
+        }
+        
+        nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: darkred;
+            background: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 7px;
+            padding: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        nav a:hover {
+            background: skyblue;
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .nav.active {
+            background: skyblue;
+            color: white;
+            transform: translateY(-3px);
+            border: 1px solid white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, darkred, red, orange);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+        
+        /* Calendar Header */
+        .calendar-header {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .month-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .month-display h2 {
+            color: darkred;
+            font-size: 2rem;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .nav-btn {
+            background: white;
+            color: darkred;
+            border: 2px solid orange;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .nav-btn:hover {
+            background: orange;
+            color: white;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .view-btn {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .view-btn.active {
+            background: skyblue;
+            color: white;
+        }
+        
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+        }
+        
+        .weekday {
+            text-align: center;
+            font-weight: bold;
+            color: darkred;
+            padding: 10px;
+            background: #f0f8ff;
+            border-radius: 8px;
+        }
+        
+        .calendar-day {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            min-height: 100px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            border-color: skyblue;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(135,206,235,0.2);
+        }
+        
+        .calendar-day.has-event {
+            background: linear-gradient(145deg, white, #fff5e6);
+            border-left: 4px solid orange;
+        }
+        
+        .calendar-day.today {
+            border: 3px solid darkred;
+            background: #fff0f0;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .event-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: orange;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        
+        .event-preview {
+            font-size: 0.8rem;
+            color: darkred;
+            background: rgba(255,165,0,0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Events List View */
+        .events-list {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+        }
+        
+        .events-list.active {
+            display: block;
+        }
+        
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 6px solid transparent;
+        }
+        
+        .event-card:hover {
+            transform: translateX(10px);
+            border-left-color: skyblue;
+        }
+        
+        .event-date {
+            background: linear-gradient(60deg, red, orange);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 100px;
+        }
+        
+        .event-date .day {
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .event-date .month {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        
+        .event-details {
+            flex: 1;
+        }
+        
+        .event-details h3 {
+            color: darkred;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .event-meta {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        
+        .event-meta i {
+            color: skyblue;
+            margin-right: 5px;
+        }
+        
+        .event-description {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .event-tag {
+            background: #f0f8ff;
+            color: darkred;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .event-btn {
+            background: skyblue;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .event-btn:hover {
+            background: deepskyblue;
+            transform: translateY(-2px);
+        }
+        
+        .event-btn.secondary {
+            background: white;
+            color: darkred;
+            border: 2px solid skyblue;
+        }
+        
+        .event-btn.secondary:hover {
+            background: skyblue;
+            color: white;
+        }
+        
+        /* Upcoming Section */
+        .upcoming-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        .upcoming-section h2 {
+            color: darkred;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            border-left: 6px solid orange;
+            padding-left: 20px;
+        }
+        
+        .upcoming-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        
+        .upcoming-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upcoming-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, red, orange);
+        }
+        
+        .upcoming-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .upcoming-date {
+            color: orange;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .upcoming-card h3 {
+            color: darkred;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .modal-header h2 {
+            color: darkred;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .reminder-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .reminder-form input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .reminder-form input:focus {
+            border-color: skyblue;
+            outline: none;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(60deg, red, orange);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,69,0,0.3);
+        }
+        
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            
+            .event-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .event-date {
+                width: 100%;
+            }
+            
+            .event-meta {
+                justify-content: center;
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+            }
+            
+            .month-display {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .calendar-grid {
+                display: none;
+            }
+            
+            .events-list {
+                display: block !important;
+            }
+            
+            .view-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="aflameb.png" class="aflame" alt="Aflame Bible Church Logo">
+        <nav>
+            <a class="nav" href="index.html">Home</a>
+            <a class="nav" href="bible.html">Bible</a>
+            <a class="nav active" href="events.html">Events</a>
+            <a class="nav" href="offerings.html">Offerings</a>
+        </nav>
+    </header>
+    
+    <div class="hero">
+        <h1><i class="fas fa-calendar-alt"></i> Church Events</h1>
+        <p>Stay connected • Grow together • Celebrate God's goodness</p>
+    </div>
+    
+    <div class="calendar-header">
+        <div class="month-display">
+            <button class="nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+            <h2 id="monthYear">February 2026</h2>
+            <button class="nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="view-toggle">
+            <button class="view-btn active" id="calendarViewBtn"><i class="fas fa-calendar"></i> Calendar</button>
+            <button class="view-btn" id="listViewBtn"><i class="fas fa-list"></i> List</button>
+        </div>
+    </div>
+    
+    <!-- Calendar Grid -->
+    <div id="calendarView" class="calendar-grid">
+        <!-- Weekdays will be inserted by JavaScript -->
+        <!-- Calendar days will be inserted by JavaScript -->
+    </div>
+    
+    <!-- Events List View -->
+    <div id="listView" class="events-list">
+        <!-- Events will be inserted by JavaScript -->
+    </div>
+    
+    <!-- Upcoming Events Section -->
+    <div class="upcoming-section">
+        <h2><i class="fas fa-star"></i> Featured Events</h2>
+        <div id="featuredEvents" class="upcoming-grid">
+            <!-- Featured events will be inserted by JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Event Details Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Event Details</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Modal content will be inserted by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reminder Modal -->
+    <div id="reminderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Set Reminder</h2>
+                <button class="close-btn" onclick="closeReminderModal()">&times;</button>
+            </div>
+            <div class="reminder-form">
+                <input type="text" id="reminderName" placeholder="Your Name" required>
+                <input type="email" id="reminderEmail" placeholder="Your Email" required>
+                <input type="tel" id="reminderPhone" placeholder="Your Phone Number (Optional)">
+                <button class="submit-btn" onclick="setReminder()">
+                    <i class="fas fa-bell"></i> Get Reminder
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Logo Preview Modal -->
+    <div id="logoModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <img src="aflameb.png" style="max-width: 100%; margin-bottom: 20px;">
+            <h3>Aflame Bible Church</h3>
+            <p>"Setting the world ablaze with God's love"</p>
+            <button class="close-btn" onclick="closeLogoModal()" style="position: static; margin-top: 20px;">Close</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Aflame Ministries Int &copy; 2026</p>
+        <p>Making everyone a minister • Jalingo, Taraba State</p>
+    </footer>
+
+    <script src="/events.js"></script>
+</body> 
+</html>
