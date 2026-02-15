@@ -1,0 +1,61 @@
+.verse-of {
+      width: 350px;
+      height: 180px;
+      border-radius: 11px;
+      box-shadow: 0 3px 5px gray;
+      position: relative;
+      margin: 7px;
+      overflow: hidden;
+      overflow-y: auto;
+      background: linear-gradient(90deg, orange 20px, white 19px);
+    }
+    .verse-of h1{
+      color: darkred;
+      margin-left: 50px;
+    }
+    .slides {
+      display: flex;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+.slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 5px 0 30px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide div:last-child {
+  align-self: flex-end;
+  color: red;
+}
+@keyframes fadeIn {
+  from {
+    opacity:0; }
+  to {
+    opacity: 1; }
+}
+.slide-small { 
+  padding-top: 2px;
+}
+.slide-btns {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  pointer-events: auto; /* keep clickable */
+  z-index: 10;
+}
+.slide-btns button {
+  background: skyblue;
+  border: 1px solid white;
+  border-radius: 12px;
+  color: white;
+  padding: 5px;
+}
