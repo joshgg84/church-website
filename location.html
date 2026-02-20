@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aflame Ministries Int · Locations</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      background: #f8f9fa;
+    }
+    
+    /* header with red->orange gradient */
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+      height: 100px;
+      background: linear-gradient(60deg, red, orange);
+      padding: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    header img {
+      width: 70px;
+      height: 40px;
+      border: 2px solid white;
+      border-radius: 5px;
+      background: white;
+      padding: 3px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      object-fit: contain;
+    }
+    
+    header img:hover {
+      transform: scale(1.1);
+    }
+    
+    nav {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: darkred;
+      background: white;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 7px;
+      padding: 8px 16px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    nav a:hover {
+      background: skyblue;
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    nav a.active {
+      background: skyblue;
+      color: white;
+      transform: translateY(-3px);
+      border: 1px solid white;
+    }
+    
+    /* location selector */
+    .select-div {
+      margin: 20px auto;
+      max-width: 600px;
+      padding: 0 20px;
+    }
+    
+    #location-select {
+      width: 100%;
+      background: white;
+      color: #333;
+      border: 2px solid skyblue;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 16px;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    #location-select:hover {
+      border-color: orange;
+    }
+    
+    /* main container */
+    .locations-page {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+    
+    .section-title {
+      text-align: center;
+      color: darkred;
+      margin: 40px 0 30px;
+      font-size: 2.2rem;
+      border-bottom: 3px solid orange;
+      padding-bottom: 15px;
+      display: inline-block;
+    }
+    
+    .title-wrapper {
+      text-align: center;
+    }
+    
+    /* location grid */
+    .location-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 30px 0;
+    }
+    
+    .location-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .location-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    /* card headers */
+    .card-header {
+      padding: 20px 20px 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .card-header.orange { 
+      background: #fff5e6; 
+      border-left: 7px solid #f39c4b; 
+    }
+
+    .card-header.skyblue { 
+      background: #f0f9ff; 
+      border-left: 7px solid #56c5e8; 
+    }
+    .card-header.skyblue h2 {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .card-header h2 {
+      font-size: 1.9rem;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .red h2 { color: #b31f1f; }
+    .orange h2 { color: #c25e00; }
+    .skyblue h2 { color: #1c7a9c; }
+    
+    .card-header p {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #555;
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+    
+    .card-header i {
+      width: 22px;
+      color: inherit;
+    }
+    
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      background: white;
+    }
+    
+    /* schedule items */
+    .schedule-item {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 5px solid;
+      transition: 0.2s;
+    }
+    
+    .schedule-item.red-item { 
+      border-left-color: #e03a3a; 
+      background: #fff6f6; 
+    }
+    
+    .schedule-item.orange-item { 
+      border-left-color: #f39c4b; 
+      background: #fffaf0; 
+    }
+    
+    .schedule-item.skyblue-item { 
+      border-left-color: #56c5e8; 
+      background: #f2fbfe; 
+    }
+    
+    .schedule-day {
+      font-weight: bold;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .schedule-day i {
+      color: #5f6b7f;
+      width: 24px;
+    }
+    
+    .schedule-desc {
+      padding-left: 32px;
+      color: #2c3e50;
+      font-weight: 500;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .time-badge {
+      background: rgba(0,0,0,0.05);
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .red-item .time-badge { 
+      background: #fbd7d7; 
+      color: #a12525; 
+    }
+    
+    .orange-item .time-badge { 
+      background: #fbe1c6; 
+      color: #aa4e00; 
+    }
+    
+    .skyblue-item .time-badge { 
+      background: #cbeefb; 
+      color: #0e6f8f; 
+    }
+    
+    /* direction button */
+    .direction-btn {
+      display: inline-block;
+      background: linear-gradient(60deg, darkred, red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+      width: 100%;
+      transition: 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .direction-btn i {
+      margin-right: 8px;
+    }
+    
+    .direction-btn:hover {
+      background: linear-gradient(60deg, red, darkred);
+      transform: translateY(-2px);
+    }
+    
+    .direction-btn.orange {
+      background: linear-gradient(60deg, #c25e00, #f39c4b);
+    }
+    
+    .direction-btn.skyblue {
+      background: linear-gradient(60deg, #136f8f, #56c5e8);
+    }
+    
+    /* contact strip */
+    .contact-strip {
+      max-width: 1000px;
+      margin: 40px auto 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 60px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+    }
+    
+    .contact-item i.fa-phone { 
+      color: #e03a3a; 
+      background: #fee; 
+      padding: 10px; 
+      border-radius: 50%; 
+    }
+    
+    .contact-item i.fa-envelope { 
+      color: #f39c4b; 
+      background: #fef3e9; 
+      padding: 10px; 
+      border-radius: 50%; 
+    }
+    
+    /* modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    
+    .modal-content {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 30px;
+      text-align: center;
+      max-width: 400px;
+      animation: slideIn 0.3s;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    .modal-content img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      border: 3px solid orange;
+      border-radius: 20px;
+      background: white;
+      padding: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .modal-content h3 {
+      color: darkred;
+      font-size: 1.8rem;
+    }
+    
+    .modal-content p {
+      color: #333;
+      margin: 15px 0 25px;
+      font-style: italic;
+    }
+    
+    .modal-content button {
+      background: linear-gradient(60deg, red, orange);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 10px 40px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    
+    .modal-content button:hover {
+      transform: scale(1.05);
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px;
+      background: #2c3e50;
+      color: white;
+      margin-top: 50px;
+    }
+    
+    @media (max-width: 768px) {
+      nav {
+        gap: 10px;
+      }
+      nav a {
+        font-size: 16px;
+        padding: 6px 12px;
+      }
+      .contact-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        border-radius: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <img src="aflameb.png" 
+         class="aflame" alt="Aflame Ministries Logo" onclick="openLogoModal()">
+    <nav>
+      <a href="/">Home</a>
+      <a href="/bible.html">Bible</a>
+      <a href="/offerings.html">Offering</a>
+      <a href="/events.html">Events</a>
+      <a href="/locations.html" class="active">Locations</a>
+    </nav>
+  </header>
+  
+  <div class="select-div">
+    <select id="location-select" onchange="quickJump(this)">
+      <option disabled selected>📍 Quick jump to a location</option>
+      <option value="atc">ATC district</option>
+      <option value="mayodassa">Mayo‑Dassa</option>
+    </select>
+  </div>
+  
+  <div class="title-wrapper">
+    <h1 class="section-title"><i class="fas fa-map-marked-alt" style="color: darkred; margin-right: 10px;"></i> Our locations</h1>
+  </div>
+  
+  <div class="locations-page">
+    <div class="location-grid">
+    
+      <!-- MAIN CARD (central schedule) -->
+      <div class="location-card">
+        <div class="card-body">
+          <div class="schedule-item red-item">
+            <div class="schedule-day"><i class="fas fa-sun"></i> SUNDAY</div>
+            <div class="schedule-desc">Worship and Word Service<span class="time-badge">8:00 AM</span></div>
+          </div>
+          <div class="schedule-item red-item">
+            <div class="schedule-day"><i class="fas fa-comment"></i> MONDAY</div>
+            <div class="schedule-desc">Counselling <span class="time-badge">(appointment)</span></div>
+          </div>
+          <div class="schedule-item red-item">
+            <div class="schedule-day"><i class="fas fa-bible"></i> TUESDAY</div>
+            <div class="schedule-desc">Bible Study <span class="time-badge">5:00 – 6:00 pm</span></div>
+          </div>
+          <div class="schedule-item red-item">
+            <div class="schedule-day"><i class="fas fa-clock"></i> THURSDAY/FRIDAY</div>
+            <div class="schedule-desc">Miracle & Prayer Hour <span class="time-badge">5:00 – 6:00 pm</span></div>
+          </div>
+          <div class="direction-btn"><i class="fas fa-map-location-dot"></i> Direction to Main</div>
+        </div>
+      </div>
+      
+      <!-- ATC CARD -->
+      <div class="location-card" id="atc">
+        <div class="card-header orange">
+          <h2><i class="fas fa-tree"></i> ATC district</h2>
+          <p><i class="fas fa-map-pin"></i> ATC along old Sunkani road, adjacent back to Farm.</p>
+        </div>
+        <div class="card-body">
+          <div class="schedule-item orange-item">
+            <div class="schedule-day"><i class="fas fa-clock"></i> THURSDAY</div>
+            <div class="schedule-desc">Miracle & Prayer Hour (ATC) <span class="time-badge">5:00 – 6:00 pm</span></div>
+          </div>
+          <div class="schedule-item orange-item">
+            <div class="schedule-day"><i class="fas fa-calendar-alt"></i> Also join main Jalingo campus</div>
+          </div>
+          <button class="direction-btn orange"><i class="fas fa-map-location-dot"></i> Direction to ATC</button>
+        </div>
+      </div>
+      
+      <!-- MAYO-DASSA CARD -->
+      <div class="location-card" id="mayodassa">
+        <div class="card-header skyblue">
+          <h2><i class="fas fa-water"></i> Mayo‑Dassa</h2>
+          <p><i class="fas fa-map-pin"></i> Mayo‑Dassa District, Jalingo LGA</p>
+        </div>
+        <div class="card-body">
+          <div class="schedule-item skyblue-item">
+            <div class="schedule-day"><i class="fas fa-star"></i> FRIDAY</div>
+            <div class="schedule-desc">Miracle & Prayer Hour (Mayo‑Dassa) <span class="time-badge">5:00 – 6:00 pm</span></div>
+          </div>
+          <button class="direction-btn skyblue"><i class="fas fa-map-location-dot"></i> Direction to Mayo‑Dassa</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="contact-strip">
+      <div class="contact-item"><i class="fas fa-phone"></i> <span>Jalingo: +234 803 555 0173</span></div>
+      <div class="contact-item"><i class="fas fa-envelope"></i> <span>aflameministriesint@gmail.com</span></div>
+    </div>
+  </div>
+  
+  <!-- MODAL (hidden by default) -->
+  <div id="logoModal" class="modal" style="display: none;" onclick="closeLogoModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <img src="aflameb.png" alt="aflame logo">
+      <h3>Aflame Ministries International</h3>
+      <p>"Setting the world ablaze with God's love"</p>
+      <button onclick="closeLogoModal()">Close</button>
+    </div>
+  </div>
+  
+  <footer>
+    <p>© Aflame Ministries 2026</p>
+    <p>Making everyone a minister · Jalingo, Nigeria</p>
+  </footer>
+
+  <script>
+    // ----- Logo modal functions -----
+    const modal = document.getElementById('logoModal');
+
+    function openLogoModal() {
+      modal.style.display = 'flex';
+    }
+
+    function closeLogoModal() {
+      modal.style.display = 'none';
+    }
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+    function quickJump(select) {
+      const val = select.value;
+      if (val === 'atc') {
+        document.getElementById('atc').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (val === 'mayodassa') {
+        document.getElementById('mayodassa').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      // reset selection to placeholder (optional)
+      select.selectedIndex = 0;
+    }
+    document.getElementById('location-select').addEventListener('change', function(e) {
+      quickJump(this);
+    });
+    const atcDirect = document.querySelector('.direction-btn.orange').onclick = () => window.location.href = 'https://wa.me/2349025839789?text=Good%20day%21%20Could%20you%20please%20guide%20me%20on%20how%20to%20get%20to%20Aflame%20ATC%20in%20Jalingo%2C%20Taraba%20state.%20Thank%20you%21%0A%0AThanks%20for%20reaching%20out.%20Are%20you%20in%20Taraba%20State%20or%20Other%3F';
+    const mayoDirect = document.querySelector('.direction-btn.skyblue').onclick = () => window.location.href = 'https://wa.me/2349025839789?text=Good%20day%21%20Could%20you%20please%20guide%20me%20on%20how%20to%20get%20to%20Aflame%20Mayo-Dassa%20in%20Jalingo%2C%20Taraba%20state.%20Thank%20you%21%0A%0AThanks%20for%20reaching%20out.%20Are%20you%20in%20Taraba%20State%20or%20Other%3F';
+  </script>
+</body>
+</html>
